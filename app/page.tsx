@@ -1,12 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { TextAnimate } from "@/components/ui/text-animate";
+import { useState, useEffect, useRef } from "react";
+import * as THREE from "three";
+
+// Simple text animation component
+function TextAnimate({ children, className }) {
+  const [visible, setVisible] = useState(false);
+  
+  useEffect(() => {
+    setVisible(true);
+  }, [children]);
+
+  return (
+    <div 
+      className={`${className} transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}
+      key={children}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function Home() {
   const [open, setOpen] = useState(false);
   const [showText, setShowText] = useState(false);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [showCube, setShowCube] = useState(false);
+  const canvasRef = useRef(null);
   
   const words = ["smart", "bold", "connected"];
 
@@ -14,12 +34,62 @@ export default function Home() {
     const timers = [
       setTimeout(() => setOpen(true), 300),
       setTimeout(() => setShowText(true), 600),
-      setTimeout(() => setCurrentWordIndex(1), 1200),  // Change to "bold"
-      setTimeout(() => setCurrentWordIndex(2), 1800),  // Change to "connected"
+      setTimeout(() => setCurrentWordIndex(1), 1200),
+      setTimeout(() => setCurrentWordIndex(2), 1800),
+      setTimeout(() => setShowCube(true), 2400), // Show cube after text animations
     ];
 
     return () => timers.forEach((t) => clearTimeout(t));
   }, []);
+
+  // Three.js cube setup
+  useEffect(() => {
+    if (!showCube || !canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    // Create cube with wireframe
+    const geometry = new THREE.BoxGeometry(2, 2, 2);
+    const edges = new THREE.EdgesGeometry(geometry);
+    const material = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
+    const cube = new THREE.LineSegments(edges, material);
+    scene.add(cube);
+
+    camera.position.z = 5;
+
+    // Animation
+    let animationId;
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+      cube.rotation.x += 0.005;
+      cube.rotation.y += 0.005;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Handle resize
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationId);
+      geometry.dispose();
+      edges.dispose();
+      material.dispose();
+      renderer.dispose();
+    };
+  }, [showCube]);
 
   return (
     <>
@@ -50,6 +120,14 @@ export default function Home() {
           }}
         />
 
+        {/* 3D Canvas Layer */}
+        <canvas
+          ref={canvasRef}
+          className={`absolute inset-0 z-15 transition-opacity duration-1000 ${
+            showCube ? "opacity-100" : "opacity-0"
+          }`}
+        />
+
         {/* Text Layer */}
         <div
           className={`absolute inset-0 flex flex-col items-center justify-center text-white z-20 transition-all duration-[1500ms] ${
@@ -59,8 +137,6 @@ export default function Home() {
           {/* Center word */}
           <TextAnimate
             className="text-[10vw] font-bold leading-none tracking-tight"
-            by="character"
-            duration={0.5}
           >
             {words[currentWordIndex]}
           </TextAnimate>
