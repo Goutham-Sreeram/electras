@@ -25,7 +25,7 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [showText, setShowText] = useState(false);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [showCube, setShowCube] = useState(false);
+  const [showModel, setShowModel] = useState(false);
   const canvasRef = useRef(null);
   
   const words = ["smart", "bold", "connected"];
@@ -36,15 +36,15 @@ export default function Home() {
       setTimeout(() => setShowText(true), 600),
       setTimeout(() => setCurrentWordIndex(1), 1200),
       setTimeout(() => setCurrentWordIndex(2), 1800),
-      setTimeout(() => setShowCube(true), 2400), // Show cube after text animations
+      setTimeout(() => setShowModel(true), 2400),
     ];
 
     return () => timers.forEach((t) => clearTimeout(t));
   }, []);
 
-  // Three.js cube setup
+  // Three.js GLTF model setup
   useEffect(() => {
-    if (!showCube || !canvasRef.current) return;
+    if (!showModel || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
     const scene = new THREE.Scene();
@@ -53,25 +53,43 @@ export default function Home() {
     
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    // Create cube with wireframe
-    const geometry = new THREE.BoxGeometry(2, 2, 2);
-    const edges = new THREE.EdgesGeometry(geometry);
-    const material = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
-    const cube = new THREE.LineSegments(edges, material);
-    scene.add(cube);
+    // Add lighting for the model
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambientLight);
+    
+    // Main directional light with shadows
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    mainLight.position.set(1, 2, 3);
+    mainLight.castShadow = true;
+    mainLight.shadow.bias = -0.001;
+    mainLight.shadow.mapSize.width = 1024;
+    mainLight.shadow.mapSize.height = 1024;
+    scene.add(mainLight);
+    
+    // Fill light from opposite side
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    fillLight.position.set(-2, 0, -2);
+    scene.add(fillLight);
 
     camera.position.z = 5;
 
-    // Animation
-    let animationId;
-    function animate() {
+    let model = null;
+    let animationId = null;
+
+    // Animation loop
+    const animate = () => {
       animationId = requestAnimationFrame(animate);
-      cube.rotation.x += 0.005;
-      cube.rotation.y += 0.005;
+      
+      if (model) {
+        model.rotation.x += 0.005;
+        model.rotation.y += 0.005;
+      }
+      
       renderer.render(scene, camera);
-    }
-    animate();
+    };
 
     // Handle resize
     const handleResize = () => {
@@ -79,17 +97,50 @@ export default function Home() {
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     };
-    window.addEventListener('resize', handleResize);
 
+    // Load GLTF model
+    (async () => {
+      try {
+        const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
+        const loader = new GLTFLoader();
+        
+        const gltf = await loader.loadAsync('/model/scene.gltf', (progress) => {
+          console.log('Loading:', (progress.loaded / progress.total * 100) + '%');
+        });
+        
+        model = gltf.scene;
+        
+        // Center and scale the model
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale = 3 / maxDim;
+        model.scale.setScalar(scale);
+        
+        model.position.x = -center.x * scale;
+        model.position.y = -center.y * scale;
+        model.position.z = -center.z * scale;
+        
+        scene.add(model);
+        
+        // Start animation
+        animate();
+        window.addEventListener('resize', handleResize);
+        
+      } catch (error) {
+        console.error('Error loading model:', error);
+      }
+    })();
+
+    // Cleanup function
     return () => {
       window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationId);
-      geometry.dispose();
-      edges.dispose();
-      material.dispose();
+      if (animationId !== null) cancelAnimationFrame(animationId);
       renderer.dispose();
     };
-  }, [showCube]);
+  }, [showModel]);
 
   return (
     <>
@@ -124,7 +175,7 @@ export default function Home() {
         <canvas
           ref={canvasRef}
           className={`absolute inset-0 z-15 transition-opacity duration-1000 ${
-            showCube ? "opacity-100" : "opacity-0"
+            showModel ? "opacity-100" : "opacity-0"
           }`}
         />
 
