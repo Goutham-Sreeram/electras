@@ -55,24 +55,42 @@ export default function Home() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.5;
 
     // Add lighting for the model
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
     scene.add(ambientLight);
     
-    // Main directional light with shadows
-    const mainLight = new THREE.DirectionalLight(0xffffff, 1.0);
-    mainLight.position.set(1, 2, 3);
-    mainLight.castShadow = true;
-    mainLight.shadow.bias = -0.001;
-    mainLight.shadow.mapSize.width = 1024;
-    mainLight.shadow.mapSize.height = 1024;
-    scene.add(mainLight);
+    // Key light - main dramatic light
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.0);
+    keyLight.position.set(10, 10, 10);
+    keyLight.castShadow = true;
+    keyLight.shadow.camera.near = 0.1;
+    keyLight.shadow.camera.far = 50;
+    keyLight.shadow.camera.left = -10;
+    keyLight.shadow.camera.right = 10;
+    keyLight.shadow.camera.top = 10;
+    keyLight.shadow.camera.bottom = -10;
+    keyLight.shadow.mapSize.width = 2048;
+    keyLight.shadow.mapSize.height = 2048;
+    scene.add(keyLight);
     
-    // Fill light from opposite side
-    const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    fillLight.position.set(-2, 0, -2);
+    // Fill light
+    const fillLight = new THREE.DirectionalLight(0x4488ff, 1.0);
+    fillLight.position.set(-10, 5, -10);
     scene.add(fillLight);
+    
+    // Rim light for edge definition
+    const rimLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    rimLight.position.set(0, 5, -10);
+    scene.add(rimLight);
+    
+    // Add a point light for extra highlights
+    const pointLight = new THREE.PointLight(0xffffff, 1.0, 100);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
 
     camera.position.z = 5;
 
@@ -83,10 +101,19 @@ export default function Home() {
     const animate = () => {
       animationId = requestAnimationFrame(animate);
       
+      
       if (model) {
-        model.rotation.x += 0.005;
-        model.rotation.y += 0.005;
+        // Create a rotation axis (perfect diagonal through X, Y, and Z)
+        const axis = new THREE.Vector3(1, 1, 1).normalize();
+        const angle = 0.015; // speed of rotation per frame
+      
+        // Apply quaternion rotation around the custom axis
+        model.quaternion.multiplyQuaternions(
+          new THREE.Quaternion().setFromAxisAngle(axis, angle),
+          model.quaternion
+        );
       }
+      
       
       renderer.render(scene, camera);
     };
@@ -104,11 +131,32 @@ export default function Home() {
         const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
         const loader = new GLTFLoader();
         
-        const gltf = await loader.loadAsync('/model/scene.gltf', (progress) => {
+        const gltf = await loader.loadAsync('/model2/scene.gltf', (progress) => {
           console.log('Loading:', (progress.loaded / progress.total * 100) + '%');
         });
         
         model = gltf.scene;
+        
+        console.log('Model loaded:', model);
+        
+        // Enable shadows and ensure materials receive lighting
+        model.traverse((child) => {
+          if (child.isMesh) {
+            console.log('Mesh found:', child.name, 'Material:', child.material?.type);
+            child.castShadow = true;
+            child.receiveShadow = true;
+            
+            // Ensure material responds to lighting
+            if (child.material) {
+              // If using MeshStandardMaterial or similar
+              if (child.material.isMeshStandardMaterial || child.material.isMeshPhysicalMaterial) {
+                child.material.roughness = 0.7;
+                child.material.metalness = 0.3;
+              }
+              child.material.needsUpdate = true;
+            }
+          }
+        });
         
         // Center and scale the model
         const box = new THREE.Box3().setFromObject(model);
@@ -116,7 +164,7 @@ export default function Home() {
         const size = box.getSize(new THREE.Vector3());
         
         const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 3 / maxDim;
+        const scale = 4 / maxDim;
         model.scale.setScalar(scale);
         
         model.position.x = -center.x * scale;
