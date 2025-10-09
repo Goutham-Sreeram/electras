@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Floating, { FloatingElement } from "@/components/fancy/image/parallax-floating";
-
+import VerticalCutReveal from "@/components/fancy/text/vertical-cut-reveal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -49,23 +49,24 @@ export default function Home() {
     window.scrollTo(0, 0);
   }, []);
 
-  // Initial sequence
+  //inital bars
   useEffect(() => {
     const timers = [
-      setTimeout(() => setOpen(true), 100),
-      setTimeout(() => setShowText(true), 1200),
-      setTimeout(() => setCurrentWordIndex(1), 1800),
-      setTimeout(() => setCurrentWordIndex(2), 2400),
+      setTimeout(() => setOpen(true), 300), // start opening
+      setTimeout(() => setShowText(true), 2500), // text fades in slowly
+      setTimeout(() => setCurrentWordIndex(1), 3500),
+      setTimeout(() => setCurrentWordIndex(2), 5000),
       setTimeout(() => {
         setShowText(false);
         setTimeout(() => {
           setShowModel(true);
           setShowBackgroundText(true);
-        }, 800);
-      }, 3000),
+        }, 1200);
+      }, 6500),
     ];
     return () => timers.forEach((t) => clearTimeout(t));
   }, []);
+  
 
   // Unified scroll animation using GSAP ScrollTrigger
   useEffect(() => {
@@ -398,11 +399,11 @@ export default function Home() {
         <div className="sticky top-0 w-full h-screen bg-[#F9F9F7] overflow-hidden">
           {/* Top & Bottom Bars */}
           <div
-            className="absolute left-0 right-0 top-0 bg-black transition-all duration-[4000ms] ease-[cubic-bezier(0.77,0,0.175,1)] z-10"
+            className="absolute left-0 right-0 top-0 bg-black transition-all duration-[7000ms] ease-[cubic-bezier(0.77,0,0.175,1)] z-10"
             style={{ height: open ? "0%" : "50%" }}
           />
           <div
-            className="absolute left-0 right-0 bottom-0 bg-black transition-all duration-[4000ms] ease-[cubic-bezier(0.77,0,0.175,1)] z-10"
+            className="absolute left-0 right-0 bottom-0 bg-black transition-all duration-[7000ms] ease-[cubic-bezier(0.77,0,0.175,1)] z-10"
             style={{ height: open ? "0%" : "50%" }}
           />
 
@@ -428,19 +429,69 @@ export default function Home() {
             />
           </div>
 
-          {/* Initial Text Layer */}
-          <div
-            className={`absolute inset-0 flex flex-col items-center justify-center text-black z-20 transition-all duration-800 px-4 ${
-              showText ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
-            }`}
-          >
-            <TextAnimate className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]">
-              {words[currentWordIndex]}
-            </TextAnimate>
+          {/* Initial Text Layer with VerticalCutReveal animation */}
+<div
+  className={`absolute inset-0 flex flex-col items-center justify-center text-black z-20 transition-all duration-800 px-4 ${
+    showText ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+  }`}
+>
+  {currentWordIndex === 0 && (
+    <VerticalCutReveal
+    splitBy="characters"
+    staggerDuration={0.05}
+    staggerFrom="center"
+    transition={{
+      type: "spring",
+      stiffness: 500,
+      damping: 21,
+      delay: 0.3,
+      }}
+      className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
+    >
+      smart
+    </VerticalCutReveal>
+  )}
+  {currentWordIndex === 1 && (
+    <VerticalCutReveal
+    splitBy="characters"
+    staggerDuration={0.05}
+    staggerFrom="center"
+    transition={{
+      type: "spring",
+      stiffness: 200,
+      damping: 21,
+      delay: 0.3,
+      }}
+      className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
+    >
+      bold
+    </VerticalCutReveal>
+  )}
+  {currentWordIndex === 2 && (
+    <VerticalCutReveal
+      splitBy="characters"
+      staggerDuration={0.05}
+      staggerFrom="center"
+      transition={{
+        type: "spring",
+        stiffness: 200,
+        damping: 21,
+        delay: 0.3,
+      }}
+      className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
+    >
+      connected
+    </VerticalCutReveal>
+  )}
 
-            <span className="absolute bottom-4 md:bottom-8 left-4 md:left-8 text-[10px] md:text-xs opacity-70">002</span>
-            <span className="absolute top-4 md:top-8 right-4 md:right-8 text-[10px] md:text-xs opacity-70">©2025</span>
-          </div>
+  <span className="absolute bottom-4 md:bottom-8 left-4 md:left-8 text-[10px] md:text-xs opacity-70">
+    002
+  </span>
+  <span className="absolute top-4 md:top-8 right-4 md:right-8 text-[10px] md:text-xs opacity-70">
+    ©2025
+  </span>
+</div>
+
 
           {/* Horizontal Scroll Text Layer */}
           <div
