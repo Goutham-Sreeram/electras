@@ -28,7 +28,7 @@ export default function Home() {
   const [textColor, setTextColor] = useState("black");
   const [showNextSection, setShowNextSection] = useState(false);
   const [showFinalSection, setShowFinalSection] = useState(false);
-  
+
   const canvasRef = useRef(null);
   const sectionRef = useRef(null);
   const nextSectionRef = useRef(null);
@@ -66,7 +66,7 @@ export default function Home() {
     ];
     return () => timers.forEach((t) => clearTimeout(t));
   }, []);
-  
+
 
   // Unified scroll animation using GSAP ScrollTrigger
   useEffect(() => {
@@ -87,17 +87,17 @@ export default function Home() {
         scrub: 1,
         onUpdate: (self) => {
           const progress = self.progress;
-          
+
           // Model rotation (0-80% of scroll)
           if (progress <= 0.8) {
             scrollState.rotation = (progress / 0.8) * Math.PI * 4;
           }
-          
+
           // Circle expansion (50-80% of scroll)
           if (progress >= 0.5 && progress <= 0.8) {
             scrollState.circleScale = (progress - 0.5) / 0.3;
             setCircleScale(scrollState.circleScale);
-            
+
             // Update text color based on circle scale
             if (scrollState.circleScale > 0.3) {
               setTextColor("white");
@@ -108,7 +108,7 @@ export default function Home() {
             scrollState.circleScale = 1;
             setCircleScale(1);
             setTextColor("white");
-            
+
             // Trigger next section
             if (!showNextSection) {
               setShowNextSection(true);
@@ -186,9 +186,9 @@ export default function Home() {
     );
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ 
-      canvas, 
-      alpha: true, 
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
       antialias: window.innerWidth > 768,
       powerPreference: "high-performance"
     });
@@ -240,19 +240,19 @@ export default function Home() {
     const handleResize = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
-      
+
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       camera.position.z = width < 768 ? 7 : 5;
-      
+
       renderer.setSize(width, height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      
+
       // Toggle shadows based on screen size
       keyLight.castShadow = width > 768;
       renderer.shadowMap.enabled = width > 768;
     };
-    
+
     window.addEventListener("resize", handleResize);
 
     // Load model
@@ -410,9 +410,8 @@ export default function Home() {
           {/* 3D Canvas */}
           <canvas
             ref={canvasRef}
-            className={`absolute inset-0 z-45 transition-opacity duration-1000 ${
-              showModel ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute inset-0 z-45 transition-opacity duration-1000 ${showModel ? "opacity-100" : "opacity-0"
+              }`}
           />
 
           {/* Circular Expanding Background */}
@@ -430,75 +429,73 @@ export default function Home() {
           </div>
 
           {/* Initial Text Layer with VerticalCutReveal animation */}
-<div
-  className={`absolute inset-0 flex flex-col items-center justify-center text-black z-20 transition-all duration-800 px-4 ${
-    showText ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
-  }`}
->
-  {currentWordIndex === 0 && (
-    <VerticalCutReveal
-    splitBy="characters"
-    staggerDuration={0.05}
-    staggerFrom="center"
-    transition={{
-      type: "spring",
-      stiffness: 500,
-      damping: 21,
-      delay: 0.3,
-      }}
-      className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
-    >
-      smart
-    </VerticalCutReveal>
-  )}
-  {currentWordIndex === 1 && (
-    <VerticalCutReveal
-    splitBy="characters"
-    staggerDuration={0.05}
-    staggerFrom="center"
-    transition={{
-      type: "spring",
-      stiffness: 200,
-      damping: 21,
-      delay: 0.3,
-      }}
-      className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
-    >
-      bold
-    </VerticalCutReveal>
-  )}
-  {currentWordIndex === 2 && (
-    <VerticalCutReveal
-      splitBy="characters"
-      staggerDuration={0.05}
-      staggerFrom="center"
-      transition={{
-        type: "spring",
-        stiffness: 200,
-        damping: 21,
-        delay: 0.3,
-      }}
-      className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
-    >
-      connected
-    </VerticalCutReveal>
-  )}
+          <div
+            className={`absolute inset-0 flex flex-col items-center justify-center text-black z-20 transition-all duration-800 px-4 ${showText ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+              }`}
+          >
+            {currentWordIndex === 0 && (
+              <VerticalCutReveal
+                splitBy="characters"
+                staggerDuration={0.05}
+                staggerFrom="center"
+                transition={{
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 21,
+                  delay: 0.3,
+                }}
+                className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
+              >
+                smart
+              </VerticalCutReveal>
+            )}
+            {currentWordIndex === 1 && (
+              <VerticalCutReveal
+                splitBy="characters"
+                staggerDuration={0.05}
+                staggerFrom="center"
+                transition={{
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 21,
+                  delay: 0.3,
+                }}
+                className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
+              >
+                bold
+              </VerticalCutReveal>
+            )}
+            {currentWordIndex === 2 && (
+              <VerticalCutReveal
+                splitBy="characters"
+                staggerDuration={0.05}
+                staggerFrom="center"
+                transition={{
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 21,
+                  delay: 0.3,
+                }}
+                className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
+              >
+                connected
+              </VerticalCutReveal>
+            )}
 
-  <span className="absolute bottom-4 md:bottom-8 left-4 md:left-8 text-[10px] md:text-xs opacity-70">
-    002
-  </span>
-  <span className="absolute top-4 md:top-8 right-4 md:right-8 text-[10px] md:text-xs opacity-70">
-    ©2025
-  </span>
-</div>
+            <span className="absolute bottom-4 md:bottom-8 left-4 md:left-8 text-[10px] md:text-xs opacity-70">
+              002
+            </span>
+            <span className="absolute top-4 md:top-8 right-4 md:right-8 text-[10px] md:text-xs opacity-70">
+              ©2025
+            </span>
+          </div>
 
 
           {/* Horizontal Scroll Text Layer */}
           <div
             id="text-container"
-            className={`absolute inset-0 flex flex-col items-center justify-center z-25 transition-all duration-500 px-4 ${
-              showBackgroundText ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute inset-0 flex flex-col items-center justify-center z-25 transition-all duration-500 px-4 ${showBackgroundText ? "opacity-100" : "opacity-0"
+              }`}
             style={{
               color: textColor,
             }}
@@ -518,11 +515,10 @@ export default function Home() {
       </div>
 
       {/* Next Section */}
-      <div 
+      <div
         ref={nextSectionRef}
-        className={`next-section min-h-screen bg-black text-white p-4 md:p-8 flex items-center justify-center ${
-          showNextSection ? 'visible' : ''
-        }`}
+        className={`next-section min-h-screen bg-black text-white p-4 md:p-8 flex items-center justify-center ${showNextSection ? 'visible' : ''
+          }`}
       >
         <div className="max-w-4xl mx-auto text-center">
           <TextAnimate className="text-4xl md:text-6xl font-medium mb-6 md:mb-8">
@@ -549,11 +545,10 @@ export default function Home() {
       </div>
 
       {/* Final Section - Appears after next section */}
-      <div 
+      <div
         ref={finalSectionRef}
-        className={`final-section relative min-h-screen bg-black text-white overflow-hidden ${
-          showFinalSection ? 'visible' : ''
-        }`}
+        className={`final-section relative min-h-screen bg-black text-white overflow-hidden ${showFinalSection ? 'visible' : ''
+          }`}
       >
         <Floating sensitivity={-1} className="overflow-hidden">
           <FloatingElement depth={0.5} className="top-[8%] left-[8%]">
@@ -609,7 +604,7 @@ export default function Home() {
               Ready to transform your vision into reality? Let's create something extraordinary.
             </TextAnimate>
           </div>
-          
+
           <div className="text-center">
             <button className="bg-white text-black px-8 md:px-12 py-4 md:py-5 rounded-full text-lg md:text-xl font-medium hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-2xl">
               Start Your Project
@@ -634,7 +629,7 @@ export default function Home() {
                 hello@example.com
               </a>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-4 text-sm md:text-base">Navigation</h4>
               <ul className="space-y-2 text-gray-400 text-sm md:text-base">
@@ -644,7 +639,7 @@ export default function Home() {
                 <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-4 text-sm md:text-base">Social</h4>
               <ul className="space-y-2 text-gray-400 text-sm md:text-base">
@@ -655,7 +650,7 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-xs md:text-sm">©2025 All rights reserved.</p>
             <div className="flex gap-6 text-gray-400 text-xs md:text-sm">
