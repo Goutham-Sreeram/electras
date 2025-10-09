@@ -33,7 +33,8 @@ export default function GalleryPage() {
       desc: "Urban streets full of energy",
     },
     {
-      src: "https://images.unsplash.com/photo-1517817748493-6f36569e5f5b?w=800&h=1000&fit=crop",
+      src: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=800&h=1000&fit=crop",
+
       desc: "Calm waves hitting the shore",
     },
     {
