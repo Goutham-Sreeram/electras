@@ -4,6 +4,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import * as THREE from "three";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Floating, { FloatingElement } from "@/components/fancy/image/parallax-floating";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,10 +27,12 @@ export default function Home() {
   const [circleScale, setCircleScale] = useState(0);
   const [textColor, setTextColor] = useState("black");
   const [showNextSection, setShowNextSection] = useState(false);
+  const [showFinalSection, setShowFinalSection] = useState(false);
   
   const canvasRef = useRef(null);
   const sectionRef = useRef(null);
   const nextSectionRef = useRef(null);
+  const finalSectionRef = useRef(null);
   const scrollAnimationRef = useRef(null);
   const modelRef = useRef(null);
   const rendererRef = useRef(null);
@@ -138,6 +142,32 @@ export default function Home() {
       ScrollTrigger.getAll().forEach(st => st.kill());
     };
   }, [showModel, showNextSection]);
+
+  // Trigger final section when next section is scrolled through
+  useEffect(() => {
+    if (!showNextSection || !nextSectionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // When next section is scrolled past (exiting viewport from top)
+          if (entry.boundingClientRect.top < 0 && entry.boundingClientRect.bottom < window.innerHeight / 2) {
+            if (!showFinalSection) {
+              setShowFinalSection(true);
+            }
+          }
+        });
+      },
+      {
+        threshold: [0, 0.5, 1],
+        rootMargin: '0px'
+      }
+    );
+
+    observer.observe(nextSectionRef.current);
+
+    return () => observer.disconnect();
+  }, [showNextSection, showFinalSection]);
 
   // Optimized THREE.js setup
   useEffect(() => {
@@ -341,6 +371,17 @@ export default function Home() {
           transform: translateY(0);
         }
 
+        .final-section {
+          opacity: 1;
+          
+          
+        }
+
+        .final-section.visible {
+          opacity: 1;
+          
+        }
+
         /* Responsive text sizing */
         @media (max-width: 768px) {
           .text-responsive {
@@ -455,6 +496,124 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Final Section - Appears after next section */}
+      <div 
+        ref={finalSectionRef}
+        className={`final-section relative min-h-screen bg-black text-white overflow-hidden ${
+          showFinalSection ? 'visible' : ''
+        }`}
+      >
+        <Floating sensitivity={-1} className="overflow-hidden">
+          <FloatingElement depth={0.5} className="top-[8%] left-[8%]">
+            <img
+              src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=400&fit=crop"
+              alt="Placeholder"
+              className="w-20 h-20 md:w-32 md:h-32 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
+            />
+          </FloatingElement>
+          <FloatingElement depth={1} className="top-[12%] left-[75%]">
+            <img
+              src="https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=400&h=400&fit=crop"
+              alt="Placeholder"
+              className="w-24 h-24 md:w-40 md:h-40 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
+            />
+          </FloatingElement>
+          <FloatingElement depth={2} className="top-[5%] left-[40%]">
+            <img
+              src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=500&fit=crop"
+              alt="Placeholder"
+              className="w-32 h-48 md:w-44 md:h-60 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
+            />
+          </FloatingElement>
+          <FloatingElement depth={1} className="top-[45%] left-[5%]">
+            <img
+              src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=400&h=400&fit=crop"
+              alt="Placeholder"
+              className="w-28 h-28 md:w-40 md:h-40 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
+            />
+          </FloatingElement>
+          <FloatingElement depth={3} className="top-[60%] left-[70%]">
+            <img
+              src="https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=400&h=500&fit=crop"
+              alt="Placeholder"
+              className="w-36 h-52 md:w-48 md:h-64 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
+            />
+          </FloatingElement>
+          <FloatingElement depth={1.5} className="top-[70%] left-[25%]">
+            <img
+              src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop"
+              alt="Placeholder"
+              className="w-24 h-24 md:w-36 md:h-36 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
+            />
+          </FloatingElement>
+        </Floating>
+
+        <div className="relative z-50 flex flex-col items-center justify-center min-h-screen p-4 md:p-8">
+          <div className="max-w-4xl mx-auto text-center mb-16 md:mb-24">
+            <TextAnimate className="text-5xl md:text-7xl font-bold mb-6 md:mb-8 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+              Let's Build Together
+            </TextAnimate>
+            <TextAnimate className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto px-4">
+              Ready to transform your vision into reality? Let's create something extraordinary.
+            </TextAnimate>
+          </div>
+          
+          <div className="text-center">
+            <button className="bg-white text-black px-8 md:px-12 py-4 md:py-5 rounded-full text-lg md:text-xl font-medium hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-2xl">
+              Start Your Project
+            </button>
+            <p className="mt-6 text-gray-500 text-sm md:text-base">
+              No commitment required • Free consultation
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-black text-white border-t border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-16">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-12">
+            <div className="col-span-1 md:col-span-2">
+              <h3 className="text-3xl md:text-4xl font-bold mb-4">Let's Connect</h3>
+              <p className="text-gray-400 mb-6 text-sm md:text-base">
+                Have a project in mind? We'd love to hear from you.
+              </p>
+              <a href="mailto:hello@example.com" className="text-lg md:text-xl hover:text-gray-300 transition-colors">
+                hello@example.com
+              </a>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4 text-sm md:text-base">Navigation</h4>
+              <ul className="space-y-2 text-gray-400 text-sm md:text-base">
+                <li><a href="#" className="hover:text-white transition-colors">Home</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Work</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4 text-sm md:text-base">Social</h4>
+              <ul className="space-y-2 text-gray-400 text-sm md:text-base">
+                <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">LinkedIn</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Dribbble</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-400 text-xs md:text-sm">©2025 All rights reserved.</p>
+            <div className="flex gap-6 text-gray-400 text-xs md:text-sm">
+              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }
