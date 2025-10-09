@@ -1,25 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useEffect, useState, ReactNode } from "react";
 import VerticalCutReveal from "@/components/fancy/text/vertical-cut-reveal";
 import PrismaticBurst from "@/components/prism";
 import { motion, AnimatePresence } from "framer-motion";
-import { ProgressiveBlur } from "@/components/ui/progressive-blur"
-function TextAnimate({ children, className }) {
+
+function TextAnimate({ children, className }: { children: ReactNode, className: string }) {
   return <div className={`animate-fade-in ${className}`}>{children}</div>;
 }
 
+interface ImageItem {
+  src: string;
+  desc: string;
+}
+
 export default function GalleryPage() {
-  const [loaded, setLoaded] = useState(false);
-  const [selected, setSelected] = useState(null); // For modal
+  const [selected, setSelected] = useState<ImageItem | null>(null); // For modal
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setTimeout(() => setLoaded(true), 400);
   }, []);
 
-  const images = [
+  const images: ImageItem[] = [
     {
       src: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=800&h=1200&fit=crop",
       desc: "A serene landscape at dawn",
@@ -70,7 +74,7 @@ export default function GalleryPage() {
         @media (min-width: 1024px) { .masonry { column-count: 4; } }
         .masonry-item { break-inside: avoid; margin-bottom: 16px; opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; position: relative; cursor: pointer; }
         .masonry-item.loaded { opacity: 1; transform: translateY(0); }
-        .masonry-item img { width: 100%; height: auto; display: block; border-radius: 1rem; }
+        .masonry-item img, .masonry-item .next-image { width: 100%; height: auto; display: block; border-radius: 1rem; }
         .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); color: white; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; text-align: center; padding: 1rem; }
         .masonry-item:hover .overlay { opacity: 1; }
       `}</style>
@@ -100,7 +104,7 @@ export default function GalleryPage() {
               damping: 25,
               delay: 0.3,
             }}
-            className="text-[12vw] md:text-[8vw] font-medium leading-none tracking-[-0.02em] mb-6"
+            containerClassName="text-[12vw] md:text-[8vw] font-medium leading-none tracking-[-0.02em] mb-6"
           >
             Gallery
           </VerticalCutReveal>
@@ -141,7 +145,7 @@ export default function GalleryPage() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               onClick={() => setSelected(item)}
             >
-              <img src={item.src} alt={`Gallery ${i + 1}`} />
+              <Image src={item.src} alt={`Gallery ${i + 1}`} width={800} height={1200} className="next-image" />
               <div className="overlay text-white text-lg md:text-xl font-medium">
                 {item.desc}
               </div>
@@ -175,7 +179,7 @@ export default function GalleryPage() {
               exit={{ scale: 0.8 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <img src={selected.src} alt="Selected" className="w-full h-auto rounded-xl mb-4" />
+              <Image src={selected.src} alt="Selected" width={1200} height={800} className="w-full h-auto rounded-xl mb-4" />
               <p className="text-white text-center text-lg md:text-xl">{selected.desc}</p>
               <button
                 onClick={() => setSelected(null)}
@@ -190,3 +194,4 @@ export default function GalleryPage() {
     </>
   );
 }
+

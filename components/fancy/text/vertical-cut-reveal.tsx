@@ -20,6 +20,7 @@ interface TextProps {
   splitBy?: "words" | "characters" | "lines" | string
   staggerDuration?: number
   staggerFrom?: "first" | "last" | "center" | "random" | number
+  className?: string
   containerClassName?: string
   wordLevelClassName?: string
   elementLevelClassName?: string
@@ -53,6 +54,7 @@ const VerticalCutReveal = forwardRef<VerticalCutRevealRef, TextProps>(
       splitBy = "words",
       staggerDuration = 0.2,
       staggerFrom = "first",
+      className,
       containerClassName,
       wordLevelClassName,
       elementLevelClassName,
@@ -121,7 +123,7 @@ const VerticalCutReveal = forwardRef<VerticalCutRevealRef, TextProps>(
         }
         return Math.abs(staggerFrom - index) * staggerDuration
       },
-      [elements.length, staggerFrom, staggerDuration]
+      [elements, splitBy, staggerFrom, staggerDuration]
     )
 
     const startAnimation = useCallback(() => {
@@ -140,7 +142,7 @@ const VerticalCutReveal = forwardRef<VerticalCutRevealRef, TextProps>(
       if (autoStart) {
         startAnimation()
       }
-    }, [autoStart])
+    }, [autoStart, startAnimation])
 
     const variants = {
       hidden: { y: reverse ? "-100%" : "100%" },
@@ -156,6 +158,7 @@ const VerticalCutReveal = forwardRef<VerticalCutRevealRef, TextProps>(
     return (
       <span
         className={cn(
+          className,
           containerClassName,
           "flex flex-wrap whitespace-pre-wrap",
           splitBy === "lines" && "flex-col"

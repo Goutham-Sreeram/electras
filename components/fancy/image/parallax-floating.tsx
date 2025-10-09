@@ -7,6 +7,7 @@ import {
   useContext,
   useEffect,
   useRef,
+  useState,
 } from "react"
 import { useAnimationFrame } from "motion/react"
 
@@ -35,6 +36,44 @@ const Floating = ({
   ...props
 }: FloatingProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    if (containerRef.current) {
+      setIsMounted(true)
+    }
+  }, [])
+
+  return (
+    <div
+      ref={containerRef}
+      className={cn("absolute top-0 left-0 w-full h-full", className)}
+      {...props}
+    >
+      {isMounted && (
+        <FloatingInner
+          containerRef={containerRef}
+          sensitivity={sensitivity}
+          easingFactor={easingFactor}
+        >
+          {children}
+        </FloatingInner>
+      )}
+      {!isMounted && children}
+    </div>
+  )
+}
+
+interface FloatingInnerProps extends FloatingProps {
+  containerRef: React.RefObject<HTMLDivElement | null>
+}
+
+const FloatingInner = ({
+  children,
+  sensitivity = 1,
+  easingFactor = 0.05,
+  containerRef,
+}: FloatingInnerProps) => {
   const elementsMap = useRef(
     new Map<
       string,
@@ -45,7 +84,7 @@ const Floating = ({
       }
     >()
   )
-  const mousePositionRef = useMousePositionRef(containerRef)
+  const mousePositionRef = useMousePositionRef(containerRef as React.RefObject<HTMLElement>)
 
   const registerElement = useCallback(
     (id: string, element: HTMLDivElement, depth: number) => {
@@ -86,13 +125,7 @@ const Floating = ({
 
   return (
     <FloatingContext.Provider value={{ registerElement, unregisterElement }}>
-      <div
-        ref={containerRef}
-        className={cn("absolute top-0 left-0 w-full h-full", className)}
-        {...props}
-      >
-        {children}
-      </div>
+      {children}
     </FloatingContext.Provider>
   )
 }
@@ -118,10 +151,12 @@ export const FloatingElement = ({
     if (!elementRef.current || !context) return
 
     const nonNullDepth = depth ?? 0.01
+    const currentId = idRef.current
+    const currentElement = elementRef.current
 
-    context.registerElement(idRef.current, elementRef.current, nonNullDepth)
-    return () => context.unregisterElement(idRef.current)
-  }, [depth])
+    context.registerElement(currentId, currentElement, nonNullDepth)
+    return () => context.unregisterElement(currentId)
+  }, [depth, context])
 
   return (
     <div

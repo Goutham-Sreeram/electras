@@ -361,7 +361,7 @@ const PrismaticBurst = ({
       const sm = mouseSmoothRef.current;
       sm[0] += (tgt[0] - sm[0]) * alpha;
       sm[1] += (tgt[1] - sm[1]) * alpha;
-      program.uniforms.uMouse.value = sm as any;
+      program.uniforms.uMouse.value = sm;
       program.uniforms.uTime.value = accumTime;
       renderer.render({ scene: meshRef.current! });
       raf = requestAnimationFrame(update);
@@ -395,7 +395,7 @@ const PrismaticBurst = ({
       meshRef.current = null;
       triRef.current = null;
     };
-  }, []);
+  }, [mixBlendMode]);
 
   useEffect(() => {
     const canvas = rendererRef.current?.gl?.canvas as HTMLCanvasElement | undefined;

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
+import { useState, useEffect, useRef, ReactNode } from "react";
 import * as THREE from "three";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,7 +11,7 @@ import VerticalCutReveal from "@/components/fancy/text/vertical-cut-reveal";
 gsap.registerPlugin(ScrollTrigger);
 
 // Optimized text animation component with memoization
-function TextAnimate({ children, className }) {
+function TextAnimate({ children, className }: { children: ReactNode, className: string }) {
   return (
     <div className={`animate-fade-in ${className}`}>
       {children}
@@ -33,14 +34,13 @@ export default function Home() {
   const sectionRef = useRef(null);
   const nextSectionRef = useRef(null);
   const finalSectionRef = useRef(null);
-  const scrollAnimationRef = useRef(null);
-  const modelRef = useRef(null);
-  const rendererRef = useRef(null);
-  const sceneRef = useRef(null);
-  const cameraRef = useRef(null);
-  const mixerRef = useRef(null);
+  const scrollAnimationRef = useRef<{ rotation: number; circleScale: number; textX: number; } | null>(null);
+  const modelRef = useRef<THREE.Group | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const mixerRef = useRef<THREE.AnimationMixer | null>(null);
 
-  const words = ["smart", "bold", "connected"];
   const scrollWords = ["innovative", "creative", "dynamic", "future"];
 
   // Reset scroll position
@@ -79,7 +79,7 @@ export default function Home() {
     };
 
     // Main scroll timeline
-    const tl = gsap.timeline({
+    gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
         start: "top top",
@@ -219,7 +219,7 @@ export default function Home() {
 
     camera.position.z = window.innerWidth < 768 ? 7 : 5; // Adjust camera for mobile
 
-    let animationId = null;
+    let animationId: number | null = null;
 
     const animate = () => {
       animationId = requestAnimationFrame(animate);
@@ -266,7 +266,7 @@ export default function Home() {
         modelRef.current = model;
 
         model.traverse((child) => {
-          if (child.isMesh) {
+          if (child instanceof THREE.Mesh) {
             if (window.innerWidth > 768) {
               child.castShadow = true;
               child.receiveShadow = true;
@@ -444,7 +444,7 @@ export default function Home() {
                   damping: 21,
                   delay: 0.3,
                 }}
-                className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
+                containerClassName="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
               >
                 smart
               </VerticalCutReveal>
@@ -460,7 +460,7 @@ export default function Home() {
                   damping: 21,
                   delay: 0.3,
                 }}
-                className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
+                containerClassName="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
               >
                 bold
               </VerticalCutReveal>
@@ -476,7 +476,7 @@ export default function Home() {
                   damping: 21,
                   delay: 0.3,
                 }}
-                className="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
+                containerClassName="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
               >
                 connected
               </VerticalCutReveal>
@@ -552,44 +552,56 @@ export default function Home() {
       >
         <Floating sensitivity={-1} className="overflow-hidden">
           <FloatingElement depth={0.5} className="top-[8%] left-[8%]">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=400&fit=crop"
               alt="Placeholder"
+              width={128}
+              height={128}
               className="w-20 h-20 md:w-32 md:h-32 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
           <FloatingElement depth={1} className="top-[12%] left-[75%]">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=400&h=400&fit=crop"
               alt="Placeholder"
+              width={160}
+              height={160}
               className="w-24 h-24 md:w-40 md:h-40 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
           <FloatingElement depth={2} className="top-[5%] left-[40%]">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=500&fit=crop"
               alt="Placeholder"
+              width={176}
+              height={240}
               className="w-32 h-48 md:w-44 md:h-60 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
           <FloatingElement depth={1} className="top-[45%] left-[5%]">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=400&h=400&fit=crop"
               alt="Placeholder"
+              width={160}
+              height={160}
               className="w-28 h-28 md:w-40 md:h-40 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
           <FloatingElement depth={3} className="top-[60%] left-[70%]">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=400&h=500&fit=crop"
               alt="Placeholder"
+              width={192}
+              height={256}
               className="w-36 h-52 md:w-48 md:h-64 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
           <FloatingElement depth={1.5} className="top-[70%] left-[25%]">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop"
               alt="Placeholder"
+              width={144}
+              height={144}
               className="w-24 h-24 md:w-36 md:h-36 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
@@ -598,10 +610,10 @@ export default function Home() {
         <div className="relative z-50 flex flex-col items-center justify-center min-h-screen p-4 md:p-8">
           <div className="max-w-4xl mx-auto text-center mb-16 md:mb-24">
             <TextAnimate className="text-5xl md:text-7xl font-bold mb-6 md:mb-8 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-              Let's Build Together
+              Let&apos;s Build Together
             </TextAnimate>
             <TextAnimate className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto px-4">
-              Ready to transform your vision into reality? Let's create something extraordinary.
+              Ready to transform your vision into reality? Let&apos;s create something extraordinary.
             </TextAnimate>
           </div>
 
@@ -623,9 +635,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-16">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-12">
             <div className="col-span-1 md:col-span-2">
-              <h3 className="text-3xl md:text-4xl font-bold mb-4">Let's Connect</h3>
+              <h3 className="text-3xl md:text-4xl font-bold mb-4">Let&apos;s Connect</h3>
               <p className="text-gray-400 mb-6 text-sm md:text-base">
-                Have a project in mind? We'd love to hear from you.
+                Have a project in mind? We&apos;d love to hear from you.
               </p>
               <a href="mailto:hello@example.com" className="text-lg md:text-xl hover:text-gray-300 transition-colors">
                 hello@example.com
