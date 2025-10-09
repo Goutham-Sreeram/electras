@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useState, useEffect, useRef, useCallback } from "react";
 import * as THREE from "three";
 import { gsap } from "gsap";
@@ -606,9 +606,11 @@ export default function Home() {
           </div>
 
           <div className="text-center">
-            <button className="bg-white text-black px-8 md:px-12 py-4 md:py-5 rounded-full text-lg md:text-xl font-medium hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-2xl">
-              Start Your Project
-            </button>
+          <Link href="/gallery">
+  <button className="bg-white text-black px-8 md:px-12 py-4 md:py-5 rounded-full text-lg md:text-xl font-medium hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-2xl">
+    View Everything
+  </button>
+</Link>
             <p className="mt-6 text-gray-500 text-sm md:text-base">
               No commitment required • Free consultation
             </p>
