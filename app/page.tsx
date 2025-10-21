@@ -461,31 +461,55 @@ export default function Home() {
       {/* Next Section */}
       <div
         ref={nextSectionRef}
-        className={`next-section min-h-screen bg-black text-white p-4 md:p-8 flex items-center justify-center ${showNextSection ? 'visible' : ''
-          }`}
+        className={`next-section min-h-screen bg-black text-white px-4 md:p-8 ${showNextSection ? 'visible' : ''}`}
       >
-        <div className="max-w-4xl mx-auto text-center">
-          <TextAnimate className="text-4xl md:text-6xl font-medium mb-6 md:mb-8">
+        <div className="max-w-4xl mx-auto text-center pt-16 md:pt-24"> {/* Added padding top */}
+          <TextAnimate className="text-4xl md:text-6xl font-medium mb-4 md:mb-8">
             Welcome to ELECTRAS
           </TextAnimate>
-          <TextAnimate className="text-lg md:text-xl text-gray-300 mb-8 md:mb-12 px-4">
+          <TextAnimate className="text-lg md:text-3xl text-gray-300 mb-8 md:mb-12">
             Department Association of Electronics and Computer Engineering.
           </TextAnimate>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-            <div className="p-4 md:p-6">
-              <h3 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Vision</h3>
-              <p className="text-sm md:text-base text-gray-300">Develop into a centre of excellence in Electronics and Computer Engineering by producing technically competent professionals catering to the needs for Industry, Academia and Society.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-8 px-0 md:px-4"> {/* Adjusted grid padding */}
+            <div className="p-4 md:p-6 bg-black/20 rounded-lg"> {/* Added background and rounded corners */}
+              <h3 className="text-3xl md:text-4xl font-medium mb-3 md:mb-4">Vision</h3>
+              <p className="text-lg md:text-xl text-gray-300">Develop into a centre of excellence in Electronics and Computer Engineering by producing technically competent professionals catering to the needs for Industry, Academia and Society.</p>
             </div>
-            <div className="p-4 md:p-6">
-              <h3 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Mission</h3>
-              <p className="text-sm md:text-base text-gray-300">To pursue continuous improvement in learning, creativity and innovation among both faculty and students by enhanced infrastructure, state-of-the art laboratories and a unique learning environment. To inculcate in both faculty and students technical and entrepreneurial skills by professional activities to create socially relevant and sustainable solutions in the electronics and computer domain.</p>
+            <div className="p-4 md:p-6 bg-black/20 rounded-lg"> {/* Added background and rounded corners */}
+              <h3 className="text-3xl md:text-4xl font-medium mb-3 md:mb-4">Mission</h3>
+              <p className="text-lg md:text-xl text-gray-300">To pursue continuous improvement in learning, creativity and innovation among both faculty and students by enhanced infrastructure, state-of-the art laboratories and a unique learning environment. To inculcate in both faculty and students technical and entrepreneurial skills by professional activities to create socially relevant and sustainable solutions in the electronics and computer domain.</p>
             </div>
           </div>
         </div>
-        
+
+        <div className="flex flex-col gap-12 md:gap-16 max-w-6xl mx-auto py-12 md:py-16 px-4 md:px-8"> {/* Adjusted container padding */}
+          {/* First section */}
+          <div className="flex flex-col gap-24 md:gap-32 max-w-6xl mx-auto py-12 md:py-16 px-4 md:px-8"> {/* Increased gap from 12/16 to 24/32 */}
+  <div>
+    <TextAnimate className="text-4xl md:text-6xl font-medium mb-4 md:mb-6">
+      About ELECTRAS
+    </TextAnimate>
+    <div className="mt-2 md:mt-4">
+      <p className="text-xl md:text-2xl text-gray-300">
+        ELECTRAS is a dynamic student organization driving innovation and leadership in Electronics and Computer Science Engineering. Our vision is to build a powerhouse community of engineers who challenge limits, redefine technology, and shape a smarter, more connected future. At ELECTRAS, creativity meets expertise. We empower students to transform ideas into reality through hands-on projects, transformative workshops, impactful research, and collaborations with industry leaders. By bridging theory and practice, we prepare our members to become innovators who lead change and create lasting impact. Rooted in collaboration, curiosity, and excellence, ELECTRAS nurtures a new generation of problem-solvers ready to tackle global challenges with sustainable, socially responsible, and forward-thinking solutions. ELECTRAS — where ambition, innovation, and engineering excellence converge to define tomorrow.
+      </p>
+    </div>
+  </div>
+  
+  {/* Second section */}
+  <div>
+    <TextAnimate className="text-4xl md:text-6xl font-medium mb-4 md:mb-6">
+      About Electronics and Computer Engineering
+    </TextAnimate>
+    <div className="mt-2 md:mt-4 mb-2 md:mb-4">
+      <p className="text-xl md:text-2xl text-gray-300">
+        Electronics and Computer Engineering  is an integrated discipline that bridges the worlds of hardware and software, preparing students to meet the evolving demands of modern technology industries. By merging these two dynamic fields, the program offers a strong foundation in both electronics and computing, enabling students to develop versatile skills and a deep understanding of cutting-edge technologies. This cross-disciplinary approach empowers aspiring engineers to pursue diverse career paths across sectors—ranging from core electronics to software development and emerging tech innovations. The result is a new generation of multi-skilled, forward-thinking professionals equipped to design intelligent systems, drive innovation, and shape the future of technology with creativity and precision.
+      </p>
+    </div>
+  </div>
+</div>
+        </div>
       </div>
-
-
 
       {/* Final Section - Appears after next section */}
       <div
@@ -575,6 +599,7 @@ export default function Home() {
               placeholder 
             </p>
           </div>
+          <span className="absolute bottom-4 md:bottom-8 left-4 md:left-8 text-[10px] md:text-xs opacity-70">004</span>
         </div>
       </div>
 
