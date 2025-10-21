@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, ReactNode } from "react";
 import VerticalCutReveal from "@/components/fancy/text/vertical-cut-reveal";
-import PrismaticBurst from "@/components/prism";
 import { motion, AnimatePresence } from "framer-motion";
 
 function TextAnimate({ children, className }: { children: ReactNode, className: string }) {
@@ -14,49 +13,55 @@ function TextAnimate({ children, className }: { children: ReactNode, className: 
 interface ImageItem {
   src: string;
   desc: string;
+  width: number;
+  height: number;
 }
 
 export default function GalleryPage() {
-  const [selected, setSelected] = useState<ImageItem | null>(null); // For modal
+  const [selected, setSelected] = useState<ImageItem | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Replace the images array with local content
   const images: ImageItem[] = [
     {
-      src: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=800&h=1200&fit=crop",
-      desc: "A serene landscape at dawn",
+      src: "/content/p1.jpg",
+      desc: "Innovative Design Solutions",
+      width: 800,
+      height: 1200
     },
     {
-      src: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=1200&h=800&fit=crop",
-      desc: "Urban streets full of energy",
+      src: "/content/p2.jpg",
+      desc: "Creative Development Process",
+      width: 1200,
+      height: 800
     },
     {
-      src: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=800&h=1000&fit=crop",
-
-      desc: "Calm waves hitting the shore",
+      src: "/content/p3.jpg",
+      desc: "Dynamic Team Collaboration",
+      width: 800,
+      height: 1000
     },
     {
-      src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1000&h=800&fit=crop",
-      desc: "Golden hour over the mountains",
+      src: "/content/p4.jpg",
+      desc: "Future-Forward Thinking",
+      width: 1000,
+      height: 800
     },
     {
-      src: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=900&h=1200&fit=crop",
-      desc: "Misty forest in the morning",
+      src: "/content/p5.jpg",
+      desc: "Cutting-edge Technology",
+      width: 900,
+      height: 1200
     },
     {
-      src: "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=1200&h=900&fit=crop",
-      desc: "Night city lights reflecting",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=1200&fit=crop",
-      desc: "Desert dunes under the sun",
-    },
-    {
-      src: "https://images.unsplash.com/photo-1493666438817-866a91353ca9?w=1000&h=1000&fit=crop",
-      desc: "Snowy peaks at sunset",
-    },
+      src: "/content/p6.jpg",
+      desc: "Seamless Integration",
+      width: 1200,
+      height: 900
+    }
   ];
 
   return (
@@ -82,18 +87,6 @@ export default function GalleryPage() {
 
       {/* Hero Section */}
       <section className="relative w-full h-[100vh] flex flex-col items-center justify-center text-center overflow-hidden">
-        <PrismaticBurst
-          animationType="rotate3d"
-          intensity={2}
-          speed={0.5}
-          distort={1.0}
-          paused={false}
-          offset={{ x: 0, y: 0 }}
-          hoverDampness={0.25}
-          rayCount={24}
-          mixBlendMode="lighten"
-          colors={['#ff007a', '#9d3dff', '#ffffff']}
-        />
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10 px-6">
           <VerticalCutReveal
             splitBy="characters"
@@ -128,10 +121,10 @@ export default function GalleryPage() {
       <section className="bg-black text-white py-24 md:py-32 px-6 md:px-12">
         <div className="max-w-6xl mx-auto text-center mb-16">
           <TextAnimate className="text-4xl md:text-6xl font-semibold mb-4">
-            Explore More Works
+            Placeholder text
           </TextAnimate>
           <p className="text-gray-400 text-base md:text-lg">
-            Every image captures a story — explore, feel, and imagine.
+            pee pee poo poo
           </p>
         </div>
 
@@ -146,7 +139,14 @@ export default function GalleryPage() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               onClick={() => setSelected(item)}
             >
-              <Image src={item.src} alt={`Gallery ${i + 1}`} width={800} height={1200} className="next-image" />
+              <Image 
+                src={item.src} 
+                alt={item.desc}
+                width={item.width}
+                height={item.height}
+                className="next-image"
+                priority={i < 4} // Prioritize loading first 4 images
+              />
               <div className="overlay text-white text-lg md:text-xl font-medium">
                 {item.desc}
               </div>
@@ -180,7 +180,13 @@ export default function GalleryPage() {
               exit={{ scale: 0.8 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <Image src={selected.src} alt="Selected" width={1200} height={800} className="w-full h-auto rounded-xl mb-4" />
+              <Image 
+                src={selected.src} 
+                alt={selected.desc} 
+                width={selected.width} 
+                height={selected.height}
+                className="w-full h-auto rounded-xl mb-4" 
+              />
               <p className="text-white text-center text-lg md:text-xl">{selected.desc}</p>
               <button
                 onClick={() => setSelected(null)}

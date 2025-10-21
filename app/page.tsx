@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef, ReactNode } from "react";
@@ -41,7 +42,7 @@ export default function Home() {
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const mixerRef = useRef<THREE.AnimationMixer | null>(null);
 
-  const scrollWords = ["innovative", "creative", "dynamic", "future"];
+  const scrollWords = ["<<<<<<<<<<<<<<<<<<<<", "create", "forever", ">>>>>>>>>>>>>>>>>>>>"];
 
   // Reset scroll position
   useEffect(() => {
@@ -255,68 +256,11 @@ export default function Home() {
 
     window.addEventListener("resize", handleResize);
 
-    // Load model
-    (async () => {
-      try {
-        const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js");
-        const loader = new GLTFLoader();
-
-        const gltf = await loader.loadAsync("/model2/scene.gltf");
-        const model = gltf.scene;
-        modelRef.current = model;
-
-        model.traverse((child) => {
-          if (child instanceof THREE.Mesh) {
-            if (window.innerWidth > 768) {
-              child.castShadow = true;
-              child.receiveShadow = true;
-            }
-            if (child.material?.isMeshStandardMaterial) {
-              child.material.roughness = 0.7;
-              child.material.metalness = 0.3;
-              child.material.needsUpdate = true;
-            }
-          }
-        });
-
-        // Center & scale model
-        const box = new THREE.Box3().setFromObject(model);
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = (window.innerWidth < 768 ? 3 : 4) / maxDim;
-        model.scale.setScalar(scale);
-        model.position.x = -center.x * scale;
-        model.position.y = -center.y * scale;
-        model.position.z = -center.z * scale;
-
-        scene.add(model);
-
-        // Animations
-        if (gltf.animations && gltf.animations.length) {
-          const mixer = new THREE.AnimationMixer(model);
-          mixerRef.current = mixer;
-          gltf.animations.forEach((clip) => {
-            const action = mixer.clipAction(clip);
-            action.play();
-            action.timeScale = 0.5;
-          });
-        }
-
-        animate();
-      } catch (err) {
-        console.error("Model load error:", err);
-      }
-    })();
-
     return () => {
       window.removeEventListener("resize", handleResize);
-      if (animationId) cancelAnimationFrame(animationId);
-      if (rendererRef.current) {
-        rendererRef.current.dispose();
-      }
     };
   }, [showModel]);
+
 
   return (
     <>
@@ -522,27 +466,26 @@ export default function Home() {
       >
         <div className="max-w-4xl mx-auto text-center">
           <TextAnimate className="text-4xl md:text-6xl font-medium mb-6 md:mb-8">
-            Welcome to the Next Chapter
+            Welcome to ELECTRAS
           </TextAnimate>
           <TextAnimate className="text-lg md:text-xl text-gray-300 mb-8 md:mb-12 px-4">
-            Where innovation meets execution and creativity transforms into reality.
+            Department Association of Electronics and Computer Engineering.
           </TextAnimate>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <div className="p-4 md:p-6">
-              <h3 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Innovation</h3>
-              <p className="text-sm md:text-base text-gray-300">Pushing boundaries with cutting-edge technology and forward-thinking solutions.</p>
+              <h3 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Vision</h3>
+              <p className="text-sm md:text-base text-gray-300">Develop into a centre of excellence in Electronics and Computer Engineering by producing technically competent professionals catering to the needs for Industry, Academia and Society.</p>
             </div>
             <div className="p-4 md:p-6">
-              <h3 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Creativity</h3>
-              <p className="text-sm md:text-base text-gray-300">Transforming ideas into visually stunning and functionally brilliant experiences.</p>
-            </div>
-            <div className="p-4 md:p-6">
-              <h3 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Excellence</h3>
-              <p className="text-sm md:text-base text-gray-300">Delivering exceptional quality and performance in every project we undertake.</p>
+              <h3 className="text-xl md:text-2xl font-medium mb-3 md:mb-4">Mission</h3>
+              <p className="text-sm md:text-base text-gray-300">To pursue continuous improvement in learning, creativity and innovation among both faculty and students by enhanced infrastructure, state-of-the art laboratories and a unique learning environment. To inculcate in both faculty and students technical and entrepreneurial skills by professional activities to create socially relevant and sustainable solutions in the electronics and computer domain.</p>
             </div>
           </div>
         </div>
+        
       </div>
+
+
 
       {/* Final Section - Appears after next section */}
       <div
@@ -553,53 +496,58 @@ export default function Home() {
         <Floating sensitivity={-1} className="overflow-hidden">
           <FloatingElement depth={0.5} className="top-[8%] left-[8%]">
             <Image
-              src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=400&fit=crop"
-              alt="Placeholder"
+              src="/content/p1.jpg"
+              alt="Team member"
               width={128}
               height={128}
               className="w-20 h-20 md:w-32 md:h-32 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
+          
           <FloatingElement depth={1} className="top-[12%] left-[75%]">
             <Image
-              src="https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=400&h=400&fit=crop"
-              alt="Placeholder"
+              src="/content/p2.jpg"
+              alt="Team member"
               width={160}
               height={160}
               className="w-24 h-24 md:w-40 md:h-40 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
+          
           <FloatingElement depth={2} className="top-[5%] left-[40%]">
             <Image
-              src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=500&fit=crop"
-              alt="Placeholder"
+              src="/content/p3.jpg"
+              alt="Team member"
               width={176}
               height={240}
               className="w-32 h-48 md:w-44 md:h-60 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
+          
           <FloatingElement depth={1} className="top-[45%] left-[5%]">
             <Image
-              src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=400&h=400&fit=crop"
-              alt="Placeholder"
+              src="/content/p4.jpg"
+              alt="Team member"
               width={160}
               height={160}
               className="w-28 h-28 md:w-40 md:h-40 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
+          
           <FloatingElement depth={3} className="top-[60%] left-[70%]">
             <Image
-              src="https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=400&h=500&fit=crop"
-              alt="Placeholder"
+              src="/content/p5.jpg"
+              alt="Team member"
               width={192}
               height={256}
               className="w-36 h-52 md:w-48 md:h-64 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
+          
           <FloatingElement depth={1.5} className="top-[70%] left-[25%]">
             <Image
-              src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop"
-              alt="Placeholder"
+              src="/content/p6.jpg"
+              alt="Team member"
               width={144}
               height={144}
               className="w-24 h-24 md:w-36 md:h-36 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
@@ -610,21 +558,21 @@ export default function Home() {
         <div className="relative z-50 flex flex-col items-center justify-center min-h-screen p-4 md:p-8">
           <div className="max-w-4xl mx-auto text-center mb-16 md:mb-24">
             <TextAnimate className="text-5xl md:text-7xl font-bold mb-6 md:mb-8 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-              Let&apos;s Build Together
+              View our Team
             </TextAnimate>
             <TextAnimate className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto px-4">
-              Ready to transform your vision into reality? Let&apos;s create something extraordinary.
+              pee pee poo poo
             </TextAnimate>
           </div>
 
           <div className="text-center">
           <Link href="/gallery">
   <button className="bg-white text-black px-8 md:px-12 py-4 md:py-5 rounded-full text-lg md:text-xl font-medium hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-2xl">
-    View Everything
+    View
   </button>
 </Link>
             <p className="mt-6 text-gray-500 text-sm md:text-base">
-              No commitment required • Free consultation
+              placeholder 
             </p>
           </div>
         </div>
@@ -635,9 +583,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-16">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-12">
             <div className="col-span-1 md:col-span-2">
-              <h3 className="text-3xl md:text-4xl font-bold mb-4">Let&apos;s Connect</h3>
+              <h3 className="text-3xl md:text-4xl font-bold mb-4">ELECTRAS.er</h3>
               <p className="text-gray-400 mb-6 text-sm md:text-base">
-                Have a project in mind? We&apos;d love to hear from you.
+                made with ❤️ by ER.
               </p>
               <a href="mailto:hello@example.com" className="text-lg md:text-xl hover:text-gray-300 transition-colors">
                 hello@example.com
