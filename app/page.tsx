@@ -42,7 +42,7 @@ export default function Home() {
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const mixerRef = useRef<THREE.AnimationMixer | null>(null);
 
-  const scrollWords = ["<<<<<<<<<<<<<<<<<<<<", "create", "forever", ">>>>>>>>>>>>>>>>>>>>"];
+  const scrollWords = ["","design", "innovate", "develop", "create", "engineer", "build", "transform", "lead", "inspire"];
 
   // Reset scroll position
   useEffect(() => {
@@ -123,20 +123,24 @@ export default function Home() {
       }
     });
 
-    // Horizontal text scroll
+    // Horizontal text scroll animation
     const textContainer = document.querySelector("#text-container > div");
     if (textContainer) {
+      // Create a seamless loop by duplicating content
+      const words = textContainer.innerHTML;
+      textContainer.innerHTML = words + words; // Duplicate content
+      
+      const totalScroll = textContainer.scrollWidth / 2; // Half because we duplicated
+
       gsap.to(textContainer, {
-        x: () => -(textContainer.scrollWidth - window.innerWidth),
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "80%",
-          scrub: 1,
-        }
-      });
+  x: -totalScroll,
+  duration: 20, // Adjust for desired speed
+  ease: "none",
+  repeat: -1
+});
+
     }
+
 
     scrollAnimationRef.current = scrollState;
 
@@ -236,7 +240,7 @@ export default function Home() {
       }
 
       renderer.render(scene, camera);
-    };
+    }
 
     const handleResize = () => {
       const width = window.innerWidth;
@@ -426,9 +430,7 @@ export default function Home() {
               </VerticalCutReveal>
             )}
 
-            <span className="absolute bottom-4 md:bottom-8 left-4 md:left-8 text-[10px] md:text-xs opacity-70">
-              002
-            </span>
+            
             <span className="absolute top-4 md:top-8 right-4 md:right-8 text-[10px] md:text-xs opacity-70">
               ©2025
             </span>
@@ -438,22 +440,28 @@ export default function Home() {
           {/* Horizontal Scroll Text Layer */}
           <div
             id="text-container"
-            className={`absolute inset-0 flex flex-col items-center justify-center z-25 transition-all duration-500 px-4 ${showBackgroundText ? "opacity-100" : "opacity-0"
-              }`}
-            style={{
-              color: textColor,
-            }}
+            className={`absolute inset-0 flex flex-col items-center justify-center z-25 transition-all duration-500 px-4 overflow-hidden ${
+              showBackgroundText ? "opacity-100" : "opacity-0"
+            }`}
+            style={{ color: textColor }}
           >
-            <div className="flex gap-[5vw] text-[10vw] md:text-[10vw] text-responsive-lg font-medium leading-none tracking-tight">
-              {scrollWords.map((word, i) => (
-                <TextAnimate key={i} className="word-item whitespace-nowrap">
-                  {word}
-                </TextAnimate>
-              ))}
+            {/* Create two sets of words for seamless looping */}
+            <div className="flex whitespace-nowrap">
+              <div className="flex gap-[5vw] text-[10vw] md:text-[10vw] text-responsive-lg font-medium leading-none tracking-tight">
+                {scrollWords.map((word, i) => (
+                  <TextAnimate key={`word-${i}`} className="word-item">
+                    {word}
+                  </TextAnimate>
+                ))}
+              </div>
+              <div className="flex gap-[5vw] text-[10vw] md:text-[10vw] text-responsive-lg font-medium leading-none tracking-tight">
+                {scrollWords.map((word, i) => (
+                  <TextAnimate key={`word-copy-${i}`} className="word-item">
+                    {word}
+                  </TextAnimate>
+                ))}
+              </div>
             </div>
-
-            <span className="absolute bottom-4 md:bottom-8 left-4 md:left-8 text-[10px] md:text-xs opacity-70">002</span>
-            <span className="absolute top-4 md:top-8 right-4 md:right-8 text-[10px] md:text-xs opacity-70">©2025</span>
           </div>
         </div>
       </div>
@@ -463,11 +471,15 @@ export default function Home() {
         ref={nextSectionRef}
         className={`next-section min-h-screen bg-black text-white px-4 md:p-8 ${showNextSection ? 'visible' : ''}`}
       >
-        <div className="max-w-4xl mx-auto text-center pt-16 md:pt-24"> {/* Added padding top */}
-          <TextAnimate className="text-4xl md:text-6xl font-medium mb-4 md:mb-8">
-            Welcome to ELECTRAS
+        {/* Reduced top padding here */}
+        <div className="max-w-4xl mx-auto text-center pt-1 md:pt-1"> {/* Changed from pt-16 md:pt-24 */}
+          <TextAnimate className="text-7xl md:text7xl font-medium mb-2">  {/* Reduced mb-8 to mb-4 */}
+            Welcome to
           </TextAnimate>
-          <TextAnimate className="text-lg md:text-3xl text-gray-300 mb-8 md:mb-12">
+          <TextAnimate className="bg-white text-black text-9xl md:text9xl font-medium mb-4"> {/* Reduced mb-8 to mb-4 */}
+            ELECTRAS
+          </TextAnimate>
+          <TextAnimate className="text-lg md:text-3xl text-gray-300 mb-6 md:mb-8"> {/* Reduced mb-12 to mb-6/mb-8 */}
             Department Association of Electronics and Computer Engineering.
           </TextAnimate>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-8 px-0 md:px-4"> {/* Adjusted grid padding */}
@@ -584,9 +596,6 @@ export default function Home() {
             <TextAnimate className="text-5xl md:text-7xl font-bold mb-6 md:mb-8 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
               View our Team
             </TextAnimate>
-            <TextAnimate className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto px-4">
-              pee pee poo poo
-            </TextAnimate>
           </div>
 
           <div className="text-center">
@@ -595,11 +604,7 @@ export default function Home() {
     View
   </button>
 </Link>
-            <p className="mt-6 text-gray-500 text-sm md:text-base">
-              placeholder 
-            </p>
           </div>
-          <span className="absolute bottom-4 md:bottom-8 left-4 md:left-8 text-[10px] md:text-xs opacity-70">004</span>
         </div>
       </div>
 
@@ -608,13 +613,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-16">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-12">
             <div className="col-span-1 md:col-span-2">
-              <h3 className="text-3xl md:text-4xl font-bold mb-4">ELECTRAS.er</h3>
+              <h3 className="text-3xl md:text-4xl font-bold mb-4">ELECTRAS</h3>
               <p className="text-gray-400 mb-6 text-sm md:text-base">
                 made with ❤️ by ER.
               </p>
-              <a href="mailto:hello@example.com" className="text-lg md:text-xl hover:text-gray-300 transition-colors">
-                hello@example.com
-              </a>
             </div>
 
             <div>
