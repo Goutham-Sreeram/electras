@@ -334,11 +334,23 @@ export default function Home() {
         /* Responsive text sizing */
         @media (max-width: 768px) {
           .text-responsive {
-            font-size: 12vw !important;
+            font-size: 8vw !important;
+            line-height: 1.1 !important;
           }
           
           .text-responsive-lg {
-            font-size: 10vw !important;
+            font-size: 6vw !important;
+            line-height: 1.1 !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .text-responsive {
+            font-size: 7vw !important;
+          }
+          
+          .text-responsive-lg {
+            font-size: 5vw !important;
           }
         }
       `}</style>
@@ -392,7 +404,7 @@ export default function Home() {
                   damping: 21,
                   delay: 0.3,
                 }}
-                containerClassName="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
+                containerClassName="text-[8vw] sm:text-[10vw] md:text-[10vw] text-responsive font-medium leading-tight tracking-[-0.02em]"
               >
                 smart
               </VerticalCutReveal>
@@ -408,7 +420,7 @@ export default function Home() {
                   damping: 21,
                   delay: 0.3,
                 }}
-                containerClassName="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
+                containerClassName="text-[8vw] sm:text-[10vw] md:text-[10vw] text-responsive font-medium leading-tight tracking-[-0.02em]"
               >
                 bold
               </VerticalCutReveal>
@@ -424,7 +436,7 @@ export default function Home() {
                   damping: 21,
                   delay: 0.3,
                 }}
-                containerClassName="text-[10vw] md:text-[10vw] text-responsive font-medium leading-none tracking-[-0.02em]"
+                containerClassName="text-[8vw] sm:text-[10vw] md:text-[10vw] text-responsive font-medium leading-tight tracking-[-0.02em]"
               >
                 connected
               </VerticalCutReveal>
@@ -447,14 +459,14 @@ export default function Home() {
           >
             {/* Create two sets of words for seamless looping */}
             <div className="flex whitespace-nowrap">
-              <div className="flex gap-[5vw] text-[10vw] md:text-[10vw] text-responsive-lg font-medium leading-none tracking-tight">
+              <div className="flex gap-[3vw] sm:gap-[4vw] md:gap-[5vw] text-[6vw] sm:text-[8vw] md:text-[10vw] text-responsive-lg font-medium leading-none tracking-tight">
                 {scrollWords.map((word, i) => (
                   <TextAnimate key={`word-${i}`} className="word-item">
                     {word}
                   </TextAnimate>
                 ))}
               </div>
-              <div className="flex gap-[5vw] text-[10vw] md:text-[10vw] text-responsive-lg font-medium leading-none tracking-tight">
+              <div className="flex gap-[3vw] sm:gap-[4vw] md:gap-[5vw] text-[6vw] sm:text-[8vw] md:text-[10vw] text-responsive-lg font-medium leading-none tracking-tight">
                 {scrollWords.map((word, i) => (
                   <TextAnimate key={`word-copy-${i}`} className="word-item">
                     {word}
@@ -472,37 +484,37 @@ export default function Home() {
         className={`next-section min-h-screen bg-black text-white px-4 md:p-8 ${showNextSection ? 'visible' : ''}`}
       >
         {/* Reduced top padding here */}
-        <div className="max-w-4xl mx-auto text-center pt-1 md:pt-1"> {/* Changed from pt-16 md:pt-24 */}
-          <TextAnimate className="text-7xl md:text7xl font-medium mb-2">  {/* Reduced mb-8 to mb-4 */}
+        <div className="max-w-4xl mx-auto text-center pt-4 md:pt-8">
+          <TextAnimate className="text-4xl sm:text-5xl md:text-7xl font-medium mb-2">
             Welcome to
           </TextAnimate>
-          <TextAnimate className="bg-white text-black text-9xl md:text9xl font-medium mb-4"> {/* Reduced mb-8 to mb-4 */}
+          <TextAnimate className="bg-white text-black text-6xl sm:text-7xl md:text-9xl font-medium mb-4">
             ELECTRAS
           </TextAnimate>
-          <TextAnimate className="text-lg md:text-3xl text-gray-300 mb-6 md:mb-8"> {/* Reduced mb-12 to mb-6/mb-8 */}
+          <TextAnimate className="text-sm sm:text-lg md:text-3xl text-gray-300 mb-4 md:mb-8 px-2">
             Department Association of Electronics and Computer Engineering.
           </TextAnimate>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-8 px-0 md:px-4"> {/* Adjusted grid padding */}
-            <div className="p-4 md:p-6 bg-black/20 rounded-lg"> {/* Added background and rounded corners */}
-              <h3 className="text-3xl md:text-4xl font-medium mb-3 md:mb-4">Vision</h3>
-              <p className="text-lg md:text-xl text-gray-300">Develop into a centre of excellence in Electronics and Computer Engineering by producing technically competent professionals catering to the needs for Industry, Academia and Society.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 px-0 md:px-4">
+            <div className="p-3 sm:p-4 md:p-6 bg-black/20 rounded-lg">
+              <h3 className="text-xl sm:text-2xl md:text-4xl font-medium mb-2 md:mb-4">Vision</h3>
+              <p className="text-sm sm:text-base md:text-xl text-gray-300">Develop into a centre of excellence in Electronics and Computer Engineering by producing technically competent professionals catering to the needs for Industry, Academia and Society.</p>
             </div>
-            <div className="p-4 md:p-6 bg-black/20 rounded-lg"> {/* Added background and rounded corners */}
-              <h3 className="text-3xl md:text-4xl font-medium mb-3 md:mb-4">Mission</h3>
-              <p className="text-lg md:text-xl text-gray-300">To pursue continuous improvement in learning, creativity and innovation among both faculty and students by enhanced infrastructure, state-of-the art laboratories and a unique learning environment. To inculcate in both faculty and students technical and entrepreneurial skills by professional activities to create socially relevant and sustainable solutions in the electronics and computer domain.</p>
+            <div className="p-3 sm:p-4 md:p-6 bg-black/20 rounded-lg">
+              <h3 className="text-xl sm:text-2xl md:text-4xl font-medium mb-2 md:mb-4">Mission</h3>
+              <p className="text-sm sm:text-base md:text-xl text-gray-300">To pursue continuous improvement in learning, creativity and innovation among both faculty and students by enhanced infrastructure, state-of-the art laboratories and a unique learning environment. To inculcate in both faculty and students technical and entrepreneurial skills by professional activities to create socially relevant and sustainable solutions in the electronics and computer domain.</p>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-12 md:gap-16 max-w-6xl mx-auto py-12 md:py-16 px-4 md:px-8"> {/* Adjusted container padding */}
+        <div className="flex flex-col gap-8 md:gap-16 max-w-6xl mx-auto py-8 md:py-16 px-3 sm:px-4 md:px-8">
           {/* First section */}
-          <div className="flex flex-col gap-24 md:gap-32 max-w-6xl mx-auto py-12 md:py-16 px-4 md:px-8"> {/* Increased gap from 12/16 to 24/32 */}
+          <div className="flex flex-col gap-12 md:gap-32 max-w-6xl mx-auto py-8 md:py-16 px-0 md:px-0">
   <div>
-    <TextAnimate className="text-4xl md:text-6xl font-medium mb-4 md:mb-6">
+    <TextAnimate className="text-2xl sm:text-3xl md:text-6xl font-medium mb-3 md:mb-6">
       About ELECTRAS
     </TextAnimate>
     <div className="mt-2 md:mt-4">
-      <p className="text-xl md:text-2xl text-gray-300">
+      <p className="text-sm sm:text-base md:text-2xl text-gray-300 leading-relaxed">
         ELECTRAS is a dynamic student organization driving innovation and leadership in Electronics and Computer Science Engineering. Our vision is to build a powerhouse community of engineers who challenge limits, redefine technology, and shape a smarter, more connected future. At ELECTRAS, creativity meets expertise. We empower students to transform ideas into reality through hands-on projects, transformative workshops, impactful research, and collaborations with industry leaders. By bridging theory and practice, we prepare our members to become innovators who lead change and create lasting impact. Rooted in collaboration, curiosity, and excellence, ELECTRAS nurtures a new generation of problem-solvers ready to tackle global challenges with sustainable, socially responsible, and forward-thinking solutions. ELECTRAS — where ambition, innovation, and engineering excellence converge to define tomorrow.
       </p>
     </div>
@@ -510,11 +522,11 @@ export default function Home() {
   
   {/* Second section */}
   <div>
-    <TextAnimate className="text-4xl md:text-6xl font-medium mb-4 md:mb-6">
+    <TextAnimate className="text-2xl sm:text-3xl md:text-6xl font-medium mb-3 md:mb-6">
       About Electronics and Computer Engineering
     </TextAnimate>
     <div className="mt-2 md:mt-4 mb-2 md:mb-4">
-      <p className="text-xl md:text-2xl text-gray-300">
+      <p className="text-sm sm:text-base md:text-2xl text-gray-300 leading-relaxed">
         Electronics and Computer Engineering  is an integrated discipline that bridges the worlds of hardware and software, preparing students to meet the evolving demands of modern technology industries. By merging these two dynamic fields, the program offers a strong foundation in both electronics and computing, enabling students to develop versatile skills and a deep understanding of cutting-edge technologies. This cross-disciplinary approach empowers aspiring engineers to pursue diverse career paths across sectors—ranging from core electronics to software development and emerging tech innovations. The result is a new generation of multi-skilled, forward-thinking professionals equipped to design intelligent systems, drive innovation, and shape the future of technology with creativity and precision.
       </p>
     </div>
@@ -530,77 +542,77 @@ export default function Home() {
           }`}
       >
         <Floating sensitivity={-1} className="overflow-hidden">
-          <FloatingElement depth={0.5} className="top-[8%] left-[8%]">
+          <FloatingElement depth={0.5} className="top-[12%] left-[5%] sm:top-[8%] sm:left-[8%]">
             <Image
               src="/content/p1.jpg"
               alt="Team member"
               width={128}
               height={128}
-              className="w-20 h-20 md:w-32 md:h-32 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
+              className="w-16 h-16 sm:w-20 sm:h-20 md:w-32 md:h-32 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
           
-          <FloatingElement depth={1} className="top-[12%] left-[75%]">
+          <FloatingElement depth={1} className="top-[8%] right-[8%] sm:top-[12%] sm:left-[75%] hidden sm:block">
             <Image
               src="/content/p2.jpg"
               alt="Team member"
               width={160}
               height={160}
-              className="w-24 h-24 md:w-40 md:h-40 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
+              className="w-16 h-16 sm:w-24 sm:h-24 md:w-40 md:h-40 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
           
-          <FloatingElement depth={2} className="top-[5%] left-[40%]">
+          <FloatingElement depth={2} className="top-[28%] left-[50%] -translate-x-1/2 sm:top-[5%] sm:left-[40%] sm:translate-x-0">
             <Image
               src="/content/p3.jpg"
               alt="Team member"
               width={176}
               height={240}
-              className="w-32 h-48 md:w-44 md:h-60 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
+              className="w-20 h-28 sm:w-32 sm:h-48 md:w-44 md:h-60 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
           
-          <FloatingElement depth={1} className="top-[45%] left-[5%]">
+          <FloatingElement depth={1} className="bottom-[28%] left-[5%] sm:top-[45%] sm:left-[5%]">
             <Image
               src="/content/p4.jpg"
               alt="Team member"
               width={160}
               height={160}
-              className="w-28 h-28 md:w-40 md:h-40 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
+              className="w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
           
-          <FloatingElement depth={3} className="top-[60%] left-[70%]">
+          <FloatingElement depth={3} className="bottom-[12%] right-[8%] sm:top-[60%] sm:left-[70%] hidden sm:block">
             <Image
               src="/content/p5.jpg"
               alt="Team member"
               width={192}
               height={256}
-              className="w-36 h-52 md:w-48 md:h-64 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
+              className="w-24 h-36 sm:w-36 sm:h-52 md:w-48 md:h-64 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
           
-          <FloatingElement depth={1.5} className="top-[70%] left-[25%]">
+          <FloatingElement depth={1.5} className="bottom-[5%] left-[50%] -translate-x-1/2 sm:top-[70%] sm:left-[25%] sm:translate-x-0">
             <Image
               src="/content/p6.jpg"
               alt="Team member"
               width={144}
               height={144}
-              className="w-24 h-24 md:w-36 md:h-36 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
+              className="w-16 h-16 sm:w-24 sm:h-24 md:w-36 md:h-36 object-cover rounded-2xl hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl"
             />
           </FloatingElement>
         </Floating>
 
-        <div className="relative z-50 flex flex-col items-center justify-center min-h-screen p-4 md:p-8">
-          <div className="max-w-4xl mx-auto text-center mb-16 md:mb-24">
-            <TextAnimate className="text-5xl md:text-7xl font-bold mb-6 md:mb-8 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+        <div className="relative z-50 flex flex-col items-center justify-center min-h-screen p-4">
+          <div className="max-w-4xl mx-auto text-center mb-12 md:mb-24">
+            <TextAnimate className="text-3xl sm:text-4xl md:text-7xl font-bold mb-4 md:mb-8 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
               View our Team
             </TextAnimate>
           </div>
 
           <div className="text-center">
           <Link href="/gallery">
-  <button className="bg-white text-black px-8 md:px-12 py-4 md:py-5 rounded-full text-lg md:text-xl font-medium hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-2xl">
+  <button className="bg-white text-black px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-5 rounded-full text-sm sm:text-base md:text-xl font-medium hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-2xl">
     View
   </button>
 </Link>
@@ -610,18 +622,18 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-black text-white border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-16">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-12">
-            <div className="col-span-1 md:col-span-2">
-              <h3 className="text-3xl md:text-4xl font-bold mb-4">ELECTRAS</h3>
-              <p className="text-gray-400 mb-6 text-sm md:text-base">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 mb-8 md:mb-12">
+            <div className="col-span-1 sm:col-span-2 md:col-span-2">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4">ELECTRAS</h3>
+              <p className="text-gray-400 mb-4 md:mb-6 text-xs sm:text-sm md:text-base">
                 made with ❤️ by ER.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4 text-sm md:text-base">Navigation</h4>
-              <ul className="space-y-2 text-gray-400 text-sm md:text-base">
+              <h4 className="font-semibold mb-3 md:mb-4 text-xs sm:text-sm md:text-base">Navigation</h4>
+              <ul className="space-y-1 md:space-y-2 text-gray-400 text-xs sm:text-sm md:text-base">
                 <li><a href="#" className="hover:text-white transition-colors">Home</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">About</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Work</a></li>
@@ -630,8 +642,8 @@ export default function Home() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4 text-sm md:text-base">Social</h4>
-              <ul className="space-y-2 text-gray-400 text-sm md:text-base">
+              <h4 className="font-semibold mb-3 md:mb-4 text-xs sm:text-sm md:text-base">Social</h4>
+              <ul className="space-y-1 md:space-y-2 text-gray-400 text-xs sm:text-sm md:text-base">
                 <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">LinkedIn</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
@@ -640,9 +652,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400 text-xs md:text-sm">©2025 All rights reserved.</p>
-            <div className="flex gap-6 text-gray-400 text-xs md:text-sm">
+          <div className="border-t border-gray-800 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
+            <p className="text-gray-400 text-[10px] sm:text-xs md:text-sm">©2025 All rights reserved.</p>
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-gray-400 text-[10px] sm:text-xs md:text-sm">
               <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
               <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
             </div>
