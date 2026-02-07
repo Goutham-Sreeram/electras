@@ -4,12 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef, ReactNode } from "react";
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import Floating, { FloatingElement } from "@/components/fancy/image/parallax-floating";
 import VerticalCutReveal from "@/components/fancy/text/vertical-cut-reveal";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 // Optimized text animation component with memoization
 function TextAnimate({ children, className }: { children: ReactNode, className: string }) {
@@ -32,9 +34,9 @@ export default function Home() {
   const [showFinalSection, setShowFinalSection] = useState(false);
 
   const canvasRef = useRef(null);
-  const sectionRef = useRef(null);
-  const nextSectionRef = useRef(null);
-  const finalSectionRef = useRef(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const nextSectionRef = useRef<HTMLElement>(null);
+  const finalSectionRef = useRef<HTMLElement>(null);
   const scrollAnimationRef = useRef<{ rotation: number; circleScale: number; textX: number; } | null>(null);
   const modelRef = useRef<THREE.Group | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -53,20 +55,41 @@ export default function Home() {
   //inital bars
   useEffect(() => {
     const timers = [
-      setTimeout(() => setOpen(true), 300), // start opening
-      setTimeout(() => setShowText(true), 2500), // text fades in slowly
-      setTimeout(() => setCurrentWordIndex(1), 3500),
-      setTimeout(() => setCurrentWordIndex(2), 5000),
+      setTimeout(() => setOpen(true), 250), // start opening
+      setTimeout(() => setShowText(true), 1800), // text fades in slowly
+      setTimeout(() => setCurrentWordIndex(1), 2500),
+      setTimeout(() => setCurrentWordIndex(2), 3500),
       setTimeout(() => {
         setShowText(false);
         setTimeout(() => {
           setShowModel(true);
           setShowBackgroundText(true);
-        }, 1200);
-      }, 6500),
+        }, 800); // Match the transition duration of the vertical text
+      }, 4500),
     ];
     return () => timers.forEach((t) => clearTimeout(t));
   }, []);
+
+  // Auto-scroll to welcome section after intro animation
+  useEffect(() => {
+    if (!showModel || !nextSectionRef.current) return;
+
+    const scrollTimer = setTimeout(() => {
+      const targetElement = nextSectionRef.current;
+      if (!targetElement) return;
+
+      const targetPosition = targetElement.offsetTop;
+      
+      // Animate scroll using GSAP for smooth natural scrolling
+      gsap.to(window, {
+        scrollTo: targetPosition,
+        duration: 4, // 4 seconds for smooth natural scroll
+        ease: "power2.inOut"
+      });
+    }, 200); // Scroll after 0.2 seconds
+
+    return () => clearTimeout(scrollTimer);
+  }, [showModel]);
 
 
   // Unified scroll animation using GSAP ScrollTrigger
@@ -85,7 +108,7 @@ export default function Home() {
         trigger: sectionRef.current,
         start: "top top",
         end: "bottom bottom",
-        scrub: 1,
+        scrub: 3,
         onUpdate: (self) => {
           const progress = self.progress;
 
@@ -134,7 +157,7 @@ export default function Home() {
 
       gsap.to(textContainer, {
   x: -totalScroll,
-  duration: 20, // Adjust for desired speed
+  duration: 24, // Smoother horizontal scroll
   ease: "none",
   repeat: -1
 });
@@ -194,18 +217,16 @@ export default function Home() {
     const renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
-      antialias: window.innerWidth > 768,
+      antialias: false,
       powerPreference: "high-performance"
     });
     rendererRef.current = renderer;
 
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio for performance
-    renderer.shadowMap.enabled = window.innerWidth > 768; // Disable shadows on mobile
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.setPixelRatio(2); // Lower pixel ratio for better performance
+    renderer.shadowMap.enabled = false; // Disable shadows for better performance
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.5;
+    renderer.toneMapping = THREE.NoToneMapping;
 
     // Optimized lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -213,34 +234,62 @@ export default function Home() {
 
     const keyLight = new THREE.DirectionalLight(0xffffff, 2.0);
     keyLight.position.set(10, 10, 10);
-    if (window.innerWidth > 768) {
-      keyLight.castShadow = true;
-    }
+    keyLight.castShadow = false;
     scene.add(keyLight);
 
     const fillLight = new THREE.DirectionalLight(0x4488ff, 1.0);
     fillLight.position.set(-10, 5, -10);
     scene.add(fillLight);
 
-    camera.position.z = window.innerWidth < 768 ? 7 : 5; // Adjust camera for mobile
+    camera.position.z = window.innerWidth < 768 ? 10 : 8; // Adjust camera for mobile
+
+    // Load Raspberry Pi model
+    const loader = new GLTFLoader();
+    loader.load('/raspberry.glb', (gltf) => {
+      const model = gltf.scene;
+      model.scale.set(0.05, 0.05, 0.05);
+      
+      // Center the model around its bounding box center
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      model.position.set(-center.x, -center.y, -center.z);
+      
+      // Create a group to hold the centered model
+      const group = new THREE.Group();
+      group.add(model);
+      group.position.set(0, 0, 0);
+      
+      modelRef.current = group;
+      scene.add(group);
+
+      if (gltf.animations && gltf.animations.length > 0) {
+        const mixer = new THREE.AnimationMixer(model);
+        mixerRef.current = mixer;
+        gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
+      }
+    });
 
     let animationId: number | null = null;
+    const clock = new THREE.Clock();
 
     const animate = () => {
       animationId = requestAnimationFrame(animate);
+      const delta = clock.getDelta();
 
-      if (modelRef.current && scrollAnimationRef.current) {
-        const rotation = scrollAnimationRef.current.rotation;
-        modelRef.current.rotation.y = rotation * 0.05;
-        modelRef.current.rotation.x = rotation * 0.5;
+      // Diagonal spinning - rotate on both Y and X axes simultaneously
+      if (modelRef.current) {
+        modelRef.current.rotation.y += 0.3 * delta;
+        modelRef.current.rotation.x += 0.2 * delta;
       }
 
       if (mixerRef.current) {
-        mixerRef.current.update(0.016);
+        mixerRef.current.update(delta);
       }
 
       renderer.render(scene, camera);
-    }
+    };
+
+    animate();
 
     const handleResize = () => {
       const width = window.innerWidth;
@@ -248,20 +297,18 @@ export default function Home() {
 
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
-      camera.position.z = width < 768 ? 7 : 5;
+      camera.position.z = width < 768 ? 10 : 8;
 
       renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-      // Toggle shadows based on screen size
-      keyLight.castShadow = width > 768;
-      renderer.shadowMap.enabled = width > 768;
+      renderer.setPixelRatio(1);
     };
 
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      if (animationId) cancelAnimationFrame(animationId);
+      renderer.dispose();
     };
   }, [showModel]);
 
@@ -306,7 +353,7 @@ export default function Home() {
         }
 
         .animate-fade-in {
-          animation: fadeIn 0.6s ease-out forwards;
+          animation: fadeIn 0.5s ease-out forwards;
         }
 
         .next-section {
@@ -359,18 +406,18 @@ export default function Home() {
         <div className="sticky top-0 w-full h-screen bg-[#F9F9F7] overflow-hidden">
           {/* Top & Bottom Bars */}
           <div
-            className="absolute left-0 right-0 top-0 bg-black transition-all duration-[7000ms] ease-[cubic-bezier(0.77,0,0.175,1)] z-10"
+            className="absolute left-0 right-0 top-0 bg-black transition-all duration-[5000ms] ease-[cubic-bezier(0.77,0,0.175,1)] z-10"
             style={{ height: open ? "0%" : "50%" }}
           />
           <div
-            className="absolute left-0 right-0 bottom-0 bg-black transition-all duration-[7000ms] ease-[cubic-bezier(0.77,0,0.175,1)] z-10"
+            className="absolute left-0 right-0 bottom-0 bg-black transition-all duration-[5000ms] ease-[cubic-bezier(0.77,0,0.175,1)] z-10"
             style={{ height: open ? "0%" : "50%" }}
           />
 
           {/* 3D Canvas */}
           <canvas
             ref={canvasRef}
-            className={`absolute inset-0 z-45 transition-opacity duration-1000 ${showModel ? "opacity-100" : "opacity-0"
+            className={`absolute inset-0 z-[50] transition-opacity duration-1000 ${showModel ? "opacity-100" : "opacity-0"
               }`}
           />
 
@@ -505,6 +552,10 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
 
         <div className="flex flex-col gap-8 md:gap-16 max-w-6xl mx-auto py-8 md:py-16 px-3 sm:px-4 md:px-8">
           {/* First section */}
