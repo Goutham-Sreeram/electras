@@ -33,10 +33,10 @@ export default function Home() {
   const [showNextSection, setShowNextSection] = useState(false);
   const [showFinalSection, setShowFinalSection] = useState(false);
 
-  const canvasRef = useRef(null);
-  const sectionRef = useRef<HTMLElement>(null);
-  const nextSectionRef = useRef<HTMLElement>(null);
-  const finalSectionRef = useRef<HTMLElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const nextSectionRef = useRef<HTMLDivElement>(null);
+  const finalSectionRef = useRef<HTMLDivElement>(null);
   const scrollAnimationRef = useRef<{ rotation: number; circleScale: number; textX: number; } | null>(null);
   const modelRef = useRef<THREE.Group | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
